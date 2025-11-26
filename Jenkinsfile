@@ -2,28 +2,23 @@ pipeline {
     agent any
 
     stages {
-        
-        stage('Checkout') {
+        stage('Clone Repo') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/iskilicaslan61/jenkinsfile-pipeline-project.git'
+                git 'https://github.com/iskilicaslan61/jenkinsfile-pipeline-project.git'
             }
         }
 
-        stage('Debug Workspace') {
+        stage('Kill old server') {
             steps {
                 sh '''
-                    echo "Listing workspace contents:"
-                    ls -la
-                '''
-            }
-        }
-
-        stage('Stop Old Server') {
-            steps {
-                sh '''
-                    echo "Stopping old python server if running..."
-                    pkill -f python-welcome-page.py || true
+                    echo "Killing old processes on port 3000..."
+                    PID=$(lsof -t -i:3000) || true
+                    if [ ! -z "$PID" ]; then
+                        kill -9 $PID || true
+                        echo "Killed process $PID"
+                    else
+                        echo "No process on port 3000"
+                    fi
                 '''
             }
         }
@@ -31,21 +26,11 @@ pipeline {
         stage('Start Python Server') {
             steps {
                 sh '''
-                    echo "Starting Python Web Server on port 3000..."
+                    echo "Starting Python web server..."
                     nohup python3 python-welcome-page.py > server.log 2>&1 &
-                    sleep 2
-                    echo "Server started."
+                    echo "Python server started on port 3000"
                 '''
             }
-        }
-    }
-
-    post {
-        success {
-            echo "Build finished successfully. Server should be reachable now."
-        }
-        failure {
-            echo "Build failed — check console log."
         }
     }
 }
