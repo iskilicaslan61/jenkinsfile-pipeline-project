@@ -19,7 +19,7 @@ pipeline {
             steps {
                 echo 'Upgrading pip...'
                 sh "${env.PYTHON_CMD} -m pip install --upgrade pip"
-                // Uncomment if you have dependencies
+                // Uncomment if you have requirements
                 // sh "${env.PYTHON_CMD} -m pip install -r requirements.txt"
             }
         }
