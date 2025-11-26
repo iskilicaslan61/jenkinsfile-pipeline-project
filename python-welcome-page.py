@@ -47,7 +47,7 @@ class Handler(SimpleHTTPRequestHandler):
         self.wfile.write(html_content.encode())
 
 if __name__ == "__main__":
-    server = HTTPServer(("localhost", 3000), Handler)
-    print("Serving on http://localhost:3000 ...")
+    server = HTTPServer(("0.0.0.0", 3000), Handler)
+    print("Serving on http://0.0.0.0:3000 ...")
     server.serve_forever()
     
