@@ -8,20 +8,6 @@ pipeline {
             }
         }
 
-        stage('Kill old server') {
-            steps {
-                sh '''
-                    echo "Killing old processes on port 3000..."
-                    PID=$(lsof -t -i:3000) || true
-                    if [ ! -z "$PID" ]; then
-                        kill -9 $PID || true
-                        echo "Killed process $PID"
-                    else
-                        echo "No process on port 3000"
-                    fi
-                '''
-            }
-        }
 
         stage('Start Python Server') {
             steps {
